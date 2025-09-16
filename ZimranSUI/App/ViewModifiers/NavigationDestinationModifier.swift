@@ -20,8 +20,8 @@ struct NavigationDestinationModifier: ViewModifier {
                     SearchView()
                 case .history:
                     HistoryView()
-                case .settings:
-                    SettingsView()
+                case .profile:
+                    ProfileView()
                 case .userRepositories:
                     UserRepositoriesView()
                 }

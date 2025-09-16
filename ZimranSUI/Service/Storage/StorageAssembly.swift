@@ -28,6 +28,8 @@ protocol HistoryStorageProvider {
     func getUserHistory() -> [HistoryItem]
     func clearRepositoryHistory()
     func clearUserHistory()
+    func deleteRepositoryHistoryItem(_ id: String)
+    func deleteUserHistoryItem(_ id: String)
 }
 
 // MARK: - History Storage Manager
@@ -38,21 +40,45 @@ final class HistoryStorageManager: HistoryStorageProvider {
     @FileStorage(path: "user_history")
     private var userHistory: [HistoryItem]?
     
+    // Кэш в памяти для мгновенного доступа
+    private var cachedRepositoryHistory: [HistoryItem] = []
+    private var cachedUserHistory: [HistoryItem] = []
+    
     private let maxHistoryItems = 20
     
+    init() {
+        // Загружаем кэш при инициализации
+        loadCacheFromStorage()
+    }
+    
+    private func loadCacheFromStorage() {
+        // Синхронно загружаем из @FileStorage
+        cachedRepositoryHistory = repositoryHistory ?? []
+        cachedUserHistory = userHistory ?? []
+        print("📚 Cache loaded: \(cachedRepositoryHistory.count) repos, \(cachedUserHistory.count) users")
+    }
+    
+    private func syncCacheToStorage() {
+        // Принудительно синхронизируем кэш с файловым хранилищем
+        repositoryHistory = cachedRepositoryHistory
+        userHistory = cachedUserHistory
+    }
+    
     func addRepositoryToHistory(_ repository: RepositoryModel) {
-        
         let historyItem = HistoryItem(repository: repository)
         
-        var currentHistory = repositoryHistory ?? []
-        currentHistory.removeAll { $0.id == historyItem.id }
-        currentHistory.insert(historyItem, at: 0)
+        // Обновляем кэш в памяти мгновенно
+        cachedRepositoryHistory.removeAll { $0.id == historyItem.id }
+        cachedRepositoryHistory.insert(historyItem, at: 0)
         
-        if currentHistory.count > maxHistoryItems {
-            currentHistory = Array(currentHistory.prefix(maxHistoryItems))
+        if cachedRepositoryHistory.count > maxHistoryItems {
+            cachedRepositoryHistory = Array(cachedRepositoryHistory.prefix(maxHistoryItems))
         }
         
-        repositoryHistory = currentHistory
+        print("📚 Added repository to cache: \(repository.name), total: \(cachedRepositoryHistory.count)")
+        
+        // Синхронизируем с файловым хранилищем
+        syncCacheToStorage()
         
         // Отправляем уведомление об обновлении истории
         NotificationCenter.default.post(name: .historyUpdated, object: nil)
@@ -61,34 +87,52 @@ final class HistoryStorageManager: HistoryStorageProvider {
     func addUserToHistory(_ user: UserModel) {
         let historyItem = HistoryItem(user: user)
         
-        var currentHistory = userHistory ?? []
-        currentHistory.removeAll { $0.id == historyItem.id }
-        currentHistory.insert(historyItem, at: 0)
+        // Обновляем кэш в памяти мгновенно
+        cachedUserHistory.removeAll { $0.id == historyItem.id }
+        cachedUserHistory.insert(historyItem, at: 0)
 
-        if currentHistory.count > maxHistoryItems {
-            currentHistory = Array(currentHistory.prefix(maxHistoryItems))
+        if cachedUserHistory.count > maxHistoryItems {
+            cachedUserHistory = Array(cachedUserHistory.prefix(maxHistoryItems))
         }
         
-        userHistory = currentHistory
+        // Синхронизируем с файловым хранилищем
+        syncCacheToStorage()
         
         // Отправляем уведомление об обновлении истории
         NotificationCenter.default.post(name: .historyUpdated, object: nil)
     }
     
     func getRepositoryHistory() -> [HistoryItem] {
-        let history = repositoryHistory ?? []
-        return history
+        print("📚 Getting repository history from cache: \(cachedRepositoryHistory.count) items")
+        return cachedRepositoryHistory
     }
     
     func getUserHistory() -> [HistoryItem] {
-        return userHistory ?? []
+        print("📚 Getting user history from cache: \(cachedUserHistory.count) items")
+        return cachedUserHistory
     }
     
     func clearRepositoryHistory() {
-        repositoryHistory = []
+        cachedRepositoryHistory = []
+        syncCacheToStorage()
+        NotificationCenter.default.post(name: .historyUpdated, object: nil)
     }
     
     func clearUserHistory() {
-        userHistory = []
+        cachedUserHistory = []
+        syncCacheToStorage()
+        NotificationCenter.default.post(name: .historyUpdated, object: nil)
+    }
+    
+    func deleteRepositoryHistoryItem(_ id: String) {
+        cachedRepositoryHistory.removeAll { $0.id == id }
+        syncCacheToStorage()
+        NotificationCenter.default.post(name: .historyUpdated, object: nil)
+    }
+    
+    func deleteUserHistoryItem(_ id: String) {
+        cachedUserHistory.removeAll { $0.id == id }
+        syncCacheToStorage()
+        NotificationCenter.default.post(name: .historyUpdated, object: nil)
     }
 }
