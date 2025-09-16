@@ -27,6 +27,10 @@ final class SearchViewModel: ObservableObject {
     private var cancellables: Set<AnyCancellable> = []
     private let itemsPerPage = 30
     
+    init() {
+        setupDebouncedSearch()
+    }
+    
     func search() {
         guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             clearResults()
@@ -92,5 +96,23 @@ final class SearchViewModel: ObservableObject {
         hasMoreData = true
         totalCount = 0
         showError = false
+    }
+    
+    private func setupDebouncedSearch() {
+        $searchText
+            .debounce(for: .milliseconds(500), scheduler: RunLoop.main)
+            .removeDuplicates()
+            .sink { [weak self] searchText in
+                guard let self = self else { return }
+                
+                if searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    self.clearResults()
+                } else {
+                    self.currentPage = 1
+                    self.hasMoreData = true
+                    self.performSearch()
+                }
+            }
+            .store(in: &cancellables)
     }
 }
