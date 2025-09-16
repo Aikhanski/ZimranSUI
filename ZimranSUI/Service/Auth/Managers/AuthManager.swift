@@ -100,14 +100,6 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         currentCodeVerifier = verifier
         let challenge = codeChallenge(for: verifier)
         
-        print("🔐 OAuth Flow Start:")
-        print("   State: \(state)")
-        print("   Code Verifier: \(verifier)")
-        print("   Code Challenge: \(challenge)")
-        print("   Client ID: \(clientID)")
-        print("   Redirect URI: \(redirectURI)")
-        print("   Scopes: \(scopes)")
-        
         // Build authorize URL
         var components = URLComponents(string: authorizeEndpoint)!
         components.queryItems = [
@@ -191,13 +183,6 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
             throw AuthError.noCodeVerifier
         }
         
-        print("🔐 OAuth Token Exchange:")
-        print("   Client ID: \(clientID)")
-        print("   Redirect URI: \(redirectURI)")
-        print("   Code: \(code)")
-        print("   Code Verifier: \(verifier)")
-        print("   Token Endpoint: \(tokenEndpoint)")
-        
         var request = URLRequest(url: URL(string: tokenEndpoint)!)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -215,21 +200,9 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
             "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
         }.joined(separator: "&")
         
-        print("   Request Body: \(bodyString)")
-        print("   Headers: \(request.allHTTPHeaderFields ?? [:])")
-        
         request.httpBody = bodyString.data(using: .utf8)
         
         let (data, response) = try await URLSession.shared.data(for: request)
-        
-        if let http = response as? HTTPURLResponse {
-            print("   Response Status: \(http.statusCode)")
-            print("   Response Headers: \(http.allHeaderFields)")
-        }
-        
-        if let responseString = String(data: data, encoding: .utf8) {
-            print("   Response Body: \(responseString)")
-        }
         
         if let http = response as? HTTPURLResponse, http.statusCode != 200 {
             throw AuthError.tokenExchangeFailed
@@ -239,12 +212,10 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         
         if let error = json?["error"] as? String {
             let errorDescription = json?["error_description"] as? String ?? error
-            print("   GitHub Error: \(error) - \(errorDescription)")
             throw AuthError.gitHubError(errorDescription)
         }
         
         if let token = json?["access_token"] as? String {
-            print("   ✅ Access Token received: \(String(token.prefix(10)))...")
             authCredentialsProvider.setToken(token)
             return token
         }
@@ -300,25 +271,6 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
     }
     
     // MARK: - Debug Functions
-    func testPKCE() {
-        let verifier = generateCodeVerifier()
-        let challenge = codeChallenge(for: verifier)
-        
-        print("🧪 PKCE Test:")
-        print("   Verifier: \(verifier)")
-        print("   Challenge: \(challenge)")
-        print("   Verifier length: \(verifier.count)")
-        print("   Challenge length: \(challenge.count)")
-        
-        // Verify challenge is correct
-        let data = Data(verifier.utf8)
-        let hashed = SHA256.hash(data: data)
-        let digest = Data(hashed)
-        let expectedChallenge = base64URL(digest)
-        
-        print("   Expected challenge: \(expectedChallenge)")
-        print("   Challenge matches: \(challenge == expectedChallenge)")
-    }
 }
 
 // MARK: - Auth Errors

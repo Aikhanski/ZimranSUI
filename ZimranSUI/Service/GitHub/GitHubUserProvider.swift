@@ -9,7 +9,7 @@ import Foundation
 import Combine
 
 protocol GitHubUserProvider {
-    func searchUsers(query: String) -> AnyPublisher<SearchUsersResponse, Error>
+    func searchUsers(query: String, sort: UserSortOption, order: SortOrder) -> AnyPublisher<SearchUsersResponse, Error>
     func getUser(username: String) -> AnyPublisher<UserModel, Error>
     func getAuthenticatedUser() -> AnyPublisher<AuthenticatedUser, Error>
 }

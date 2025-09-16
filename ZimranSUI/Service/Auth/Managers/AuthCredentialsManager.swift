@@ -7,6 +7,10 @@
 
 import Foundation
 
+extension Notification.Name {
+    static let tokenUpdated = Notification.Name("tokenUpdated")
+}
+
 final class AuthCredentialsManager: AuthCredentialsProvider, UserSessionDestroyer {
     @ProtectedStorage(key: "github_access_token")
     private var accessToken: String?

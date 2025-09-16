@@ -10,8 +10,7 @@ import SafariServices
 
 struct HistoryView: View {
     @StateObject private var viewModel = HistoryViewModel()
-    @State private var showingSafari = false
-    @State private var safariURL: URL?
+    @State private var safariItem: SafariItem?
     @State private var showingUserRepositories = false
     @State private var selectedUser: UserModel?
     
@@ -28,10 +27,8 @@ struct HistoryView: View {
                     clearMenu
                 }
             }
-            .sheet(isPresented: $showingSafari) {
-                if let url = safariURL {
-                    SafariView(url: url)
-                }
+            .sheet(item: $safariItem) { item in
+                SafariView(url: item.url)
             }
             .sheet(isPresented: $showingUserRepositories) {
                 NavigationView {
@@ -40,6 +37,12 @@ struct HistoryView: View {
             }
             .onAppear {
                 viewModel.loadHistory()
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .historyUpdated)) { _ in
+                viewModel.loadHistory()
+            }
+            .refreshable {
+                await viewModel.refreshHistory()
             }
         }
     }
@@ -124,8 +127,9 @@ struct HistoryView: View {
         List {
             ForEach(viewModel.repositoryHistory) { item in
                 HistoryItemRowView(item: item) {
-                    safariURL = URL(string: item.url)
-                    showingSafari = true
+                    if let url = URL(string: item.url) {
+                        safariItem = SafariItem(url: url)
+                    }
                 }
             }
             .onDelete(perform: deleteRepositoryHistory)
@@ -171,7 +175,11 @@ struct HistoryView: View {
     }
     
     private func deleteRepositoryHistory(offsets: IndexSet) {
-        viewModel.clearRepositoryHistory()
+        let historyStorageProvider = DependencyContainer.shared.resolve(HistoryStorageProvider.self)!
+        offsets.map { viewModel.repositoryHistory[$0] }.forEach { item in
+            historyStorageProvider.deleteRepositoryHistoryItem(item.id)
+        }
+        viewModel.loadHistory()
     }
     
     private func deleteUserHistory(offsets: IndexSet) {

@@ -48,36 +48,6 @@ final class NetworkClientImpl: NetworkClient {
             .validate(contentType: ["application/json", "application/vnd.github+json"])
             .publishDecodable(type: Response.self)
             .value()
-            .handleEvents(
-                receiveOutput: { response in
-                    print("✅ Request successful:")
-                    print("   URL: \(url)")
-                    print("   Method: \(method)")
-                    print("   Response type: \(Response.self)")
-                },
-                receiveCompletion: { completion in
-                    switch completion {
-                    case .finished:
-                        print("✅ Request completed successfully")
-                    case .failure(let error):
-                        print("❌ Request failed:")
-                        print("   URL: \(url)")
-                        print("   Method: \(method)")
-                        print("   Error: \(error)")
-                        if let afError = error as? AFError {
-                            print("   AFError details: \(afError)")
-                            switch afError {
-                            case .responseValidationFailed(reason: .unacceptableStatusCode(code: let code)):
-                                print("   Response status: \(code)")
-                            case .responseValidationFailed(reason: .customValidationFailed(error: let customError)):
-                                print("   Custom validation error: \(customError)")
-                            default:
-                                print("   Other AFError: \(afError)")
-                            }
-                        }
-                    }
-                }
-            )
             .mapError { error in
                 if let afError = error as? AFError {
                     return NetworkError.alamofireError(afError)

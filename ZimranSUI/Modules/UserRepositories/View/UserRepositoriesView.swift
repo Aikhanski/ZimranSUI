@@ -10,8 +10,7 @@ import SafariServices
 
 struct UserRepositoriesView: View {
     @StateObject private var viewModel = UserRepositoriesViewModel()
-    @State private var showingSafari = false
-    @State private var safariURL: URL?
+    @State private var safariItem: SafariItem?
     @State private var username: String = ""
     
     var body: some View {
@@ -35,8 +34,7 @@ struct UserRepositoriesView: View {
                     .disabled(username.isEmpty)
                 }
                 .padding()
-                
-                // Content
+
                 if viewModel.isLoading {
                     Spacer()
                     ProgressView("Loading repositories...")
@@ -56,8 +54,9 @@ struct UserRepositoriesView: View {
                     List(viewModel.repositories) { repository in
                         RepositoryRowView(repository: repository) {
                             viewModel.selectRepository(repository)
-                            safariURL = URL(string: repository.htmlUrl)
-                            showingSafari = true
+                            if let url = URL(string: repository.htmlUrl) {
+                                safariItem = SafariItem(url: url)
+                            }
                         }
                     }
                     .listStyle(PlainListStyle())
@@ -76,10 +75,8 @@ struct UserRepositoriesView: View {
             }
             .navigationTitle("User Repositories")
             .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $showingSafari) {
-                if let url = safariURL {
-                    SafariView(url: url)
-                }
+            .sheet(item: $safariItem) { item in
+                SafariView(url: item.url)
             }
             .errorAlert(isPresented: $viewModel.showError, error: viewModel.error)
         }

@@ -10,8 +10,7 @@ import SafariServices
 
 struct RepositorySearchView: View {
     @StateObject private var viewModel = RepositorySearchViewModel()
-    @State private var showingSafari = false
-    @State private var safariURL: URL?
+    @State private var safariItem: SafariItem?
     
     var body: some View {
         NavigationView {
@@ -127,8 +126,9 @@ struct RepositorySearchView: View {
                             ForEach(viewModel.repositories) { repository in
                                 RepositoryModelRowView(repository: repository) {
                                     viewModel.selectRepository(repository)
-                                    safariURL = URL(string: repository.htmlUrl)
-                                    showingSafari = true
+                                    if let url = URL(string: repository.htmlUrl) {
+                                        safariItem = SafariItem(url: url)
+                                    }
                                 }
                                 .onAppear {
                                     if repository == viewModel.repositories.last {
@@ -152,10 +152,8 @@ struct RepositorySearchView: View {
             }
             .navigationTitle("Repository Search")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showingSafari) {
-                if let url = safariURL {
-                    SafariView(url: url)
-                }
+            .sheet(item: $safariItem) { item in
+                SafariView(url: item.url)
             }
         }
     }

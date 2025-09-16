@@ -13,21 +13,14 @@ final class HistoryViewModel: ObservableObject {
     @Published var repositoryHistory: [HistoryItem] = []
     @Published var userHistory: [HistoryItem] = []
     @Published var selectedTab: HistoryTab = .repositories
+    @Published var isRefreshing = false
     
     private let historyStorageProvider = DependencyContainer.shared.resolve(HistoryStorageProvider.self)!
     private let router = DependencyContainer.shared.resolve(Router.self)!
     private var cancellables: Set<AnyCancellable> = []
     
     init() {
-        // Загружаем историю сразу при инициализации
         loadHistory()
-        
-        // Подписываемся на изменения в хранилище
-        NotificationCenter.default.publisher(for: .historyUpdated)
-            .sink { [weak self] _ in
-                self?.loadHistory()
-            }
-            .store(in: &cancellables)
     }
     
     enum HistoryTab: CaseIterable {
@@ -47,6 +40,13 @@ final class HistoryViewModel: ObservableObject {
     func loadHistory() {
         repositoryHistory = historyStorageProvider.getRepositoryHistory()
         userHistory = historyStorageProvider.getUserHistory()
+    }
+    
+    @MainActor
+    func refreshHistory() async {
+        isRefreshing = true
+        loadHistory()
+        isRefreshing = false
     }
     
     func clearRepositoryHistory() {

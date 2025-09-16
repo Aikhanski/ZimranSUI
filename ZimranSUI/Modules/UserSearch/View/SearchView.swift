@@ -8,10 +8,14 @@
 import SwiftUI
 import SafariServices
 
+struct SafariItem: Identifiable {
+    let id = UUID()
+    let url: URL
+}
+
 struct SearchView: View {
     @StateObject private var viewModel = SearchViewModel()
-    @State private var showingSafari = false
-    @State private var safariURL: URL?
+    @State private var safariItem: SafariItem?
     
     var body: some View {
         NavigationView {
@@ -22,10 +26,8 @@ struct SearchView: View {
             }
             .navigationTitle("Search Users")
             .navigationBarTitleDisplayMode(.large)
-            .sheet(isPresented: $showingSafari) {
-                if let url = safariURL {
-                    SafariView(url: url)
-                }
+            .sheet(item: $safariItem) { item in
+                SafariView(url: item.url)
             }
             .errorAlert(isPresented: $viewModel.showError, error: viewModel.error)
         }
@@ -92,8 +94,9 @@ struct SearchView: View {
             List(viewModel.users) { user in
                 UserRowView(user: user) {
                     viewModel.selectUser(user)
-                    safariURL = URL(string: user.htmlUrl)
-                    showingSafari = true
+                    if let url = URL(string: user.htmlUrl) {
+                        safariItem = SafariItem(url: url)
+                    }
                 }
                 .onAppear {
                     if user == viewModel.users.last {

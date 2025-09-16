@@ -31,7 +31,7 @@ final class Router: ObservableObject {
     }
     
     func showSettings() {
-        path.append(.settings)
+        path.append(.profile)
     }
     
     func showUserRepositories() {

@@ -12,6 +12,6 @@ enum Route: Hashable {
     case repositorySearch
     case userSearch
     case history
-    case settings
+    case profile
     case userRepositories
 }

@@ -71,7 +71,7 @@ final class SearchViewModel: ObservableObject {
         isLoading = true
         showError = false
         
-        githubUserProvider.searchUsers(query: searchText)
+        githubUserProvider.searchUsers(query: searchText, sort: sortOption, order: sortOrder)
             .sink { [weak self] completion in
                 self?.isLoading = false
                 if case .failure(let error) = completion {
