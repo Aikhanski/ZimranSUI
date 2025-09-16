@@ -12,6 +12,7 @@ struct ZimranSUIApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .modifier(NavigationDestinationModifier())
         }
     }
 }

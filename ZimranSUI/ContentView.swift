@@ -8,25 +8,43 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject private var authViewModel = AuthenticationViewModel()
-    @StateObject private var oauthManager = OAuthManager()
+    @StateObject private var authProvider = DependencyContainer.shared.resolve(AuthProvider.self) as! AuthManager
+    @StateObject private var router = DependencyContainer.shared.resolve(Router.self)!
     
     var body: some View {
-        Group {
-            if authViewModel.isAuthenticated || oauthManager.isAuthenticated {
-                MainTabView()
-            } else {
-                AuthenticationView()
+        NavigationStack(path: $router.path) {
+            Group {
+                if authProvider.isAuthenticated {
+                    MainTabView()
+                } else {
+                    AuthenticationView()
+                }
+            }
+            .navigationDestination(for: Route.self) { route in
+                switch route {
+                case .authentication:
+                    AuthenticationView()
+                case .repositorySearch:
+                    RepositorySearchView()
+                case .userSearch:
+                    SearchView()
+                case .history:
+                    HistoryView()
+                case .settings:
+                    SettingsView()
+                case .userRepositories:
+                    UserRepositoriesView()
+                }
             }
         }
-        .environmentObject(authViewModel)
-        .environmentObject(oauthManager)
+        .environmentObject(authProvider)
+        .environmentObject(router)
     }
 }
 
 struct MainTabView: View {
-    @EnvironmentObject var oauthManager: OAuthManager
-    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var authProvider: AuthManager
+    @EnvironmentObject var router: Router
     
     var body: some View {
         TabView {
@@ -58,34 +76,44 @@ struct MainTabView: View {
 }
 
 struct SettingsView: View {
-    @EnvironmentObject var oauthManager: OAuthManager
-    @EnvironmentObject var authViewModel: AuthenticationViewModel
+    @EnvironmentObject var authProvider: AuthManager
     
     var body: some View {
         NavigationView {
             List {
                 Section("Authentication") {
-                    if oauthManager.isAuthenticated {
+                    if authProvider.isAuthenticated {
                         HStack {
                             Image(systemName: "checkmark.circle.fill")
                                 .foregroundColor(.green)
-                            Text("OAuth Authentication")
+                            Text("Authenticated")
                             Spacer()
                             Button("Sign Out") {
-                                oauthManager.signOut()
+                                authProvider.signOut()
                             }
                             .foregroundColor(.red)
                         }
-                    } else if authViewModel.isAuthenticated {
-                        HStack {
-                            Image(systemName: "key.fill")
-                                .foregroundColor(.blue)
-                            Text("Personal Access Token")
-                            Spacer()
-                            Button("Sign Out") {
-                                authViewModel.logout()
+                        
+                        if let user = authProvider.currentUser {
+                            HStack {
+                                AsyncImage(url: URL(string: user.avatarURL)) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                                .frame(width: 30, height: 30)
+                                .clipShape(Circle())
+                                
+                                VStack(alignment: .leading) {
+                                    Text(user.name ?? user.login)
+                                        .font(.headline)
+                                    Text("@\(user.login)")
+                                        .font(.caption)
+                                        .foregroundColor(.secondary)
+                                }
                             }
-                            .foregroundColor(.red)
                         }
                     }
                 }

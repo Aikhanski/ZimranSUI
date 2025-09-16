@@ -6,13 +6,31 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B0CA5C9F2E795A39003EDFAA /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = B0CA5C9E2E795A39003EDFAA /* Alamofire */; };
+		B0CA5CA22E795A60003EDFAA /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = B0CA5CA12E795A60003EDFAA /* Swinject */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		B0CA5BC72E7837D2003EDFAA /* ZimranSUI.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ZimranSUI.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		B0CA5D152E7976ED003EDFAA /* Exceptions for "ZimranSUI" folder in "ZimranSUI" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = B0CA5BC62E7837D2003EDFAA /* ZimranSUI */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		B0CA5BC92E7837D2003EDFAA /* ZimranSUI */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B0CA5D152E7976ED003EDFAA /* Exceptions for "ZimranSUI" folder in "ZimranSUI" target */,
+			);
 			path = ZimranSUI;
 			sourceTree = "<group>";
 		};
@@ -23,6 +41,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B0CA5C9F2E795A39003EDFAA /* Alamofire in Frameworks */,
+				B0CA5CA22E795A60003EDFAA /* Swinject in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -65,6 +85,8 @@
 			);
 			name = ZimranSUI;
 			packageProductDependencies = (
+				B0CA5C9E2E795A39003EDFAA /* Alamofire */,
+				B0CA5CA12E795A60003EDFAA /* Swinject */,
 			);
 			productName = ZimranSUI;
 			productReference = B0CA5BC72E7837D2003EDFAA /* ZimranSUI.app */;
@@ -94,6 +116,10 @@
 			);
 			mainGroup = B0CA5BBE2E7837D2003EDFAA;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B0CA5C9D2E795A39003EDFAA /* XCRemoteSwiftPackageReference "Alamofire" */,
+				B0CA5CA02E795A60003EDFAA /* XCRemoteSwiftPackageReference "Swinject" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = B0CA5BC82E7837D2003EDFAA /* Products */;
 			projectDirPath = "";
@@ -254,13 +280,13 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ZimranSUI/Preview Content\"";
 				DEVELOPMENT_TEAM = 2983LZ8PZ7;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ZimranSUI/Info.plist;
 				INFOPLIST_KEY_CFBundleURLTypes = "{\n    CFBundleURLName = \"GitHub OAuth\";\n    CFBundleURLSchemes =     (\n        zimransui\n    );\n}";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -284,13 +310,13 @@
 				DEVELOPMENT_ASSET_PATHS = "\"ZimranSUI/Preview Content\"";
 				DEVELOPMENT_TEAM = 2983LZ8PZ7;
 				ENABLE_PREVIEWS = YES;
-				GENERATE_INFOPLIST_FILE = YES;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = ZimranSUI/Info.plist;
 				INFOPLIST_KEY_CFBundleURLTypes = "{\n    CFBundleURLName = \"GitHub OAuth\";\n    CFBundleURLSchemes =     (\n        zimransui\n    );\n}";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = UIInterfaceOrientationPortrait;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -326,6 +352,38 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B0CA5C9D2E795A39003EDFAA /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
+		B0CA5CA02E795A60003EDFAA /* XCRemoteSwiftPackageReference "Swinject" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Swinject/Swinject";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.10.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B0CA5C9E2E795A39003EDFAA /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0CA5C9D2E795A39003EDFAA /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+		B0CA5CA12E795A60003EDFAA /* Swinject */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B0CA5CA02E795A60003EDFAA /* XCRemoteSwiftPackageReference "Swinject" */;
+			productName = Swinject;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = B0CA5BBF2E7837D2003EDFAA /* Project object */;
 }
