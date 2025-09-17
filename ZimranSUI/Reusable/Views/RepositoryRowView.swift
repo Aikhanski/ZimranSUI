@@ -16,61 +16,61 @@ struct RepositoryRowView: View {
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
                     Text(repository.name)
-                        .font(.headline)
-                        .foregroundColor(.primary)
+                        .font(.labelLarge)
+                        .foregroundColor(.primaryText)
                     
                     Spacer()
                     
-                    HStack(spacing: 12) {
-                        HStack(spacing: 4) {
+                    HStack(spacing: .spacingM) {
+                        HStack(spacing: .spacingXS) {
                             Image(systemName: "star.fill")
-                                .foregroundColor(.yellow)
+                                .foregroundColor(.accentOrange)
                                 .font(.caption)
                             Text("\(repository.stargazersCount)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(.captionRegular)
+                                .foregroundColor(.secondaryText)
                         }
                         
-                        HStack(spacing: 4) {
+                        HStack(spacing: .spacingXS) {
                             Image(systemName: "arrow.triangle.branch")
-                                .foregroundColor(.blue)
+                                .foregroundColor(.accentBlue)
                                 .font(.caption)
                             Text("\(repository.forksCount)")
-                                .font(.caption)
-                                .foregroundColor(.secondary)
+                                .font(.captionRegular)
+                                .foregroundColor(.secondaryText)
                         }
                     }
                 }
                 
                 if let description = repository.description {
                     Text(description)
-                        .font(.subheadline)
-                        .foregroundColor(.secondary)
+                        .font(.bodySmall)
+                        .foregroundColor(.secondaryText)
                         .lineLimit(2)
                 }
                 
                 HStack {
                     if let language = repository.language {
                         Text(language)
-                            .font(.caption)
-                            .padding(.horizontal, 8)
-                            .padding(.vertical, 4)
-                            .background(Color.blue.opacity(0.1))
-                            .foregroundColor(.blue)
-                            .cornerRadius(4)
+                            .font(.captionSmall)
+                            .padding(.horizontal, CGFloat.paddingS)
+                            .padding(.vertical, CGFloat.paddingXS)
+                            .background(Color.accentBlue.opacity(0.1))
+                            .foregroundColor(.accentBlue)
+                            .cornerRadius(.radiusS)
                     }
                     
                     Spacer()
                     
                     Text("Updated \(formatDate(repository.updatedAt))")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
+                        .font(.captionRegular)
+                        .foregroundColor(.secondaryText)
                 }
             }
-            .padding()
-            .background(Color(.systemBackground))
-            .cornerRadius(8)
-            .shadow(color: .gray.opacity(0.1), radius: 1, x: 0, y: 1)
+            .padding(CGFloat.paddingL)
+            .background(Color.primaryBackground)
+            .cornerRadius(.radiusM)
+            .shadow(color: .shadowLight, radius: 1, x: 0, y: 1)
         }
         .buttonStyle(PlainButtonStyle())
     }

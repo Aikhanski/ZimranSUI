@@ -51,14 +51,16 @@ final class RepositorySearchViewModel: ObservableObject {
     
     func changeSortOption(_ sortOption: RepositorySortOption) {
         self.sortOption = sortOption
-        if !repositories.isEmpty {
+        // Trigger search when sort option changes
+        if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             search()
         }
     }
     
-    func changeSortOrder(_ sortOrder: SortOrder) {
-        self.sortOrder = sortOrder
-        if !repositories.isEmpty {
+    func toggleSortOrder() {
+        sortOrder = sortOrder == .asc ? .desc : .asc
+        // Trigger search when sort order changes
+        if !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             search()
         }
     }

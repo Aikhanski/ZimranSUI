@@ -13,83 +13,66 @@ struct AuthenticationView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Image(systemName: "person.circle.fill")
-                    .font(.system(size: 80))
-                    .foregroundColor(.blue)
+            VStack(spacing: .spacingXL) {
+                headerSection
+                descriptionSection
+                actionSection
                 
-                Text("GitHub Authentication")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                Text("Choose your preferred authentication method")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                
-                VStack(spacing: 16) {
-                    Button(action: viewModel.authenticateWithOAuth) {
-                        HStack {
-                            if viewModel.isLoading {
-                                ProgressView()
-                                    .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                    .scaleEffect(0.8)
-                            }
-                            Image(systemName: "globe")
-                            Text(viewModel.isLoading ? "Authenticating..." : "Sign in with GitHub")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.black)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                    }
-                    .disabled(viewModel.isLoading)
-                    
-                    // Divider
-                    HStack {
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(.gray.opacity(0.3))
-                        Text("or")
-                            .foregroundColor(.gray)
-                            .padding(.horizontal, 16)
-                        Rectangle()
-                            .frame(height: 1)
-                            .foregroundColor(.gray.opacity(0.3))
-                    }
-                    .padding(.horizontal)
-                    
-                    Button(action: { showingTokenInput = true }) {
-                        HStack {
-                            Image(systemName: "key")
-                            Text("Use Personal Access Token")
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.blue)
-                        .foregroundColor(.white)
-                        .cornerRadius(10)
-                    }
-                }
-                .padding(.horizontal)
-                
-                if viewModel.showError {
-                    Text(viewModel.error?.localizedDescription ?? "An error occurred")
-                        .foregroundColor(.red)
-                        .padding(.horizontal)
+                if viewModel.showError, let error = viewModel.error {
+                    ErrorLabel(message: error.localizedDescription)
+                        .padding(.horizontal, CGFloat.paddingL)
                 }
                 
                 Spacer()
             }
-            .padding()
+            .padding(CGFloat.paddingL)
             .navigationTitle("Welcome")
             .navigationBarHidden(true)
-                .sheet(isPresented: $showingTokenInput) {
-                    TokenInputView(viewModel: viewModel)
-                }
+            .sheet(isPresented: $showingTokenInput) {
+                TokenInputView(viewModel: viewModel)
+            }
         }
+    }
+    
+    // MARK: - Sections
+    private var headerSection: some View {
+        Image(systemName: "person.circle.fill")
+            .font(.system(size: 80))
+            .foregroundColor(.accentBlue)
+    }
+    
+    private var descriptionSection: some View {
+        VStack(spacing: .spacingS) {
+            Text("GitHub Authentication")
+                .font(.titleLarge)
+            
+            Text("Choose your preferred authentication method")
+                .font(.bodyRegular)
+                .foregroundColor(.secondaryText)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, CGFloat.paddingL)
+        }
+    }
+    
+    private var actionSection: some View {
+        VStack(spacing: .spacingL) {
+            PrimaryButton(
+                title: "Sign in with GitHub",
+                systemIcon: "globe",
+                isLoading: viewModel.isLoading,
+                action: viewModel.authenticateWithOAuth
+            )
+            
+            DividerWithText(text: "or")
+            
+            SecondaryButton(
+                title: "Use Personal Access Token",
+                systemIcon: "key"
+            ) {
+                showingTokenInput = true
+            }
+        }
+        .padding(.horizontal, CGFloat.paddingL)
     }
 }
 
@@ -99,53 +82,20 @@ struct TokenInputView: View {
     
     var body: some View {
         NavigationView {
-            VStack(spacing: 20) {
-                Text("Personal Access Token")
-                    .font(.title2)
-                    .fontWeight(.bold)
+            VStack(spacing: .spacingXL) {
+                headerSection
+                inputSection
                 
-                Text("Enter your GitHub Personal Access Token")
-                    .font(.subheadline)
-                    .foregroundColor(.secondary)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal)
-                
-                VStack(spacing: 16) {
-                    SecureField("Personal Access Token", text: $viewModel.token)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                }
-                .padding(.horizontal)
-                
-                if viewModel.showError {
-                    Text(viewModel.error?.localizedDescription ?? "An error occurred")
-                        .foregroundColor(.red)
-                        .padding(.horizontal)
+                if viewModel.showError, let error = viewModel.error {
+                    ErrorLabel(message: error.localizedDescription)
+                        .padding(.horizontal, CGFloat.paddingL)
                 }
                 
-                    Button(action: {
-                        viewModel.authenticateWithToken()
-                        dismiss()
-                    }) {
-                    HStack {
-                        if viewModel.isLoading {
-                            ProgressView()
-                                .progressViewStyle(CircularProgressViewStyle(tint: .white))
-                                .scaleEffect(0.8)
-                        }
-                        Text(viewModel.isLoading ? "Authenticating..." : "Sign In")
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(Color.blue)
-                    .foregroundColor(.white)
-                    .cornerRadius(10)
-                }
-                .disabled(viewModel.isLoading || viewModel.token.isEmpty)
-                .padding(.horizontal)
+                actionSection
                 
                 Spacer()
             }
-            .padding()
+            .padding(CGFloat.paddingL)
             .navigationTitle("Token Authentication")
             .navigationBarTitleDisplayMode(.inline)
             .navigationBarBackButtonHidden(true)
@@ -157,6 +107,38 @@ struct TokenInputView: View {
                 }
             }
         }
+    }
+    
+    // MARK: - Sections
+    private var headerSection: some View {
+        VStack(spacing: .spacingS) {
+            Text("Personal Access Token")
+                .font(.titleMedium)
+            
+            Text("Enter your GitHub Personal Access Token")
+                .font(.bodyRegular)
+                .foregroundColor(.secondaryText)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, CGFloat.paddingL)
+        }
+    }
+    
+    private var inputSection: some View {
+        SecureField("Personal Access Token", text: $viewModel.token)
+            .textFieldStyle(RoundedBorderTextFieldStyle())
+            .padding(.horizontal, CGFloat.paddingL)
+    }
+    
+    private var actionSection: some View {
+        PrimaryButton(
+            title: "Sign In",
+            isLoading: viewModel.isLoading,
+            isDisabled: viewModel.token.isEmpty
+        ) {
+            viewModel.authenticateWithToken()
+            dismiss()
+        }
+        .padding(.horizontal, CGFloat.paddingL)
     }
 }
 

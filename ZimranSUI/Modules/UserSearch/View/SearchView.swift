@@ -20,9 +20,38 @@ struct SearchView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                searchBar
-                sortControls
-                content
+                // Fixed SearchBar at top - always visible
+                SearchBar(
+                    text: $viewModel.searchText,
+                    placeholder: "Search users...",
+                    onSubmit: viewModel.search,
+                    searchAction: viewModel.search
+                )
+                .background(Color.primaryBackground)
+                .zIndex(1) // Ensure it stays on top
+
+                // Content area with controls and results
+                VStack(spacing: 0) {
+                    // Sort controls - only show when there are results
+                    if !viewModel.users.isEmpty {
+                        UserSortControlsView(
+                            sortOption: $viewModel.sortOption,
+                            sortOrder: $viewModel.sortOrder,
+                            onSortOptionChanged: viewModel.changeSortOption,
+                            onSortOrderToggled: viewModel.toggleSortOrder
+                        )
+                        .background(Color.primaryBackground)
+                        
+                        ResultHeaderView(
+                            totalCount: viewModel.totalCount,
+                            isLoading: viewModel.isLoading
+                        )
+                        .background(Color.primaryBackground)
+                    }
+
+                    // Scrollable content
+                    contentView
+                }
             }
             .navigationTitle("Search Users")
             .navigationBarTitleDisplayMode(.large)
@@ -33,64 +62,26 @@ struct SearchView: View {
         }
     }
     
-    private var searchBar: some View {
-        HStack {
-            TextField("Search users...", text: $viewModel.searchText)
-                .textFieldStyle(RoundedBorderTextFieldStyle())
-                .onSubmit {
-                    viewModel.search()
-                }
-            
-            Button("Search") {
+    @ViewBuilder
+    private var contentView: some View {
+        if viewModel.isLoading && viewModel.users.isEmpty {
+            LoadingView(message: "Searching users...")
+        } else if let error = viewModel.error {
+            EmptyStateView(
+                icon: "exclamationmark.triangle",
+                title: "Error",
+                subtitle: error.localizedDescription,
+                actionTitle: "Try Again"
+            ) {
                 viewModel.search()
             }
-            .disabled(viewModel.searchText.isEmpty)
-        }
-        .padding()
-    }
-    
-    @ViewBuilder
-    private var sortControls: some View {
-        if !viewModel.users.isEmpty {
-            HStack {
-                Text("Sort by:")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-                
-                Picker("Sort", selection: $viewModel.sortOption) {
-                    ForEach(UserSortOption.allCases, id: \.self) { sortType in
-                        Text(sortType.rawValue).tag(sortType)
-                    }
-                }
-                .pickerStyle(MenuPickerStyle())
-                
-                Spacer()
-            }
-            .padding(.horizontal)
-        }
-    }
-    
-    @ViewBuilder
-    private var content: some View {
-        if viewModel.isLoading && viewModel.users.isEmpty {
-            Spacer()
-            ProgressView("Searching...")
-            Spacer()
         } else if viewModel.users.isEmpty && !viewModel.searchText.isEmpty {
-            Spacer()
-            VStack(spacing: 16) {
-                Image(systemName: "person.circle")
-                    .font(.system(size: 50))
-                    .foregroundColor(.gray)
-                Text("No users found")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Text("Try a different search term")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            Spacer()
-        } else if !viewModel.searchText.isEmpty {
+            EmptyStateView(
+                icon: "person.circle",
+                title: "No users found",
+                subtitle: "Try a different search term"
+            )
+        } else if !viewModel.users.isEmpty {
             List(viewModel.users) { user in
                 UserRowView(user: user) {
                     viewModel.selectUser(user)
@@ -106,70 +97,16 @@ struct SearchView: View {
             }
             .listStyle(PlainListStyle())
         } else {
-            Spacer()
-            VStack(spacing: 16) {
-                Image(systemName: "magnifyingglass")
-                    .font(.system(size: 50))
-                    .foregroundColor(.gray)
-                Text("Search GitHub Users")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Text("Enter a username to get started")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            Spacer()
+            EmptyStateView(
+                icon: "magnifyingglass",
+                title: "Search GitHub Users",
+                subtitle: "Enter a username to get started"
+            )
         }
         
         if viewModel.isLoading && !viewModel.users.isEmpty {
-            HStack {
-                Spacer()
-                ProgressView()
-                    .scaleEffect(0.8)
-                Spacer()
-            }
-            .padding()
+            LoadingOverlay(message: "Loading more...")
         }
-    }
-}
-
-struct UserRowView: View {
-    let user: UserModel
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 12) {
-                AsyncImage(url: URL(string: user.avatarUrl)) { image in
-                    image
-                        .resizable()
-                        .aspectRatio(contentMode: .fill)
-                } placeholder: {
-                    Image(systemName: "person.circle.fill")
-                        .foregroundColor(.gray)
-                }
-                .frame(width: 40, height: 40)
-                .clipShape(Circle())
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(user.login)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    Text(user.type)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-            }
-            .padding(.vertical, 4)
-        }
-        .buttonStyle(PlainButtonStyle())
     }
 }
 

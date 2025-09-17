@@ -88,39 +88,19 @@ struct HistoryView: View {
     }
     
     private var emptyRepositoryState: some View {
-        VStack {
-            Spacer()
-            VStack {
-                Image(systemName: "clock")
-                    .font(.system(size: 50))
-                    .foregroundColor(.gray)
-                Text("No repository history")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Text("Viewed repositories will appear here")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            Spacer()
-        }
+        EmptyStateView(
+            icon: "clock",
+            title: "No repository history",
+            subtitle: "Viewed repositories will appear here"
+        )
     }
     
     private var emptyUserState: some View {
-        VStack {
-            Spacer()
-            VStack {
-                Image(systemName: "person.circle")
-                    .font(.system(size: 50))
-                    .foregroundColor(.gray)
-                Text("No user history")
-                    .font(.headline)
-                    .foregroundColor(.secondary)
-                Text("Viewed users will appear here")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            Spacer()
-        }
+        EmptyStateView(
+            icon: "person.circle",
+            title: "No user history",
+            subtitle: "Viewed users will appear here"
+        )
     }
     
     private var repositoryList: some View {
@@ -186,44 +166,6 @@ struct HistoryView: View {
         viewModel.clearUserHistory()
     }
 }
-
-struct HistoryItemRowView: View {
-    let item: HistoryItem
-    let onTap: () -> Void
-    
-    var body: some View {
-        Button(action: onTap) {
-            HStack(spacing: 12) {
-                Image(systemName: item.type == .repository ? "folder.fill" : "person.circle.fill")
-                    .foregroundColor(item.type == .repository ? .blue : .green)
-                    .frame(width: 24, height: 24)
-                
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(item.title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                    
-                    Text(item.subtitle)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    
-                    Text(item.timestamp, style: .relative)
-                        .font(.caption2)
-                        .foregroundColor(.secondary)
-                }
-                
-                Spacer()
-                
-                Image(systemName: "chevron.right")
-                    .foregroundColor(.secondary)
-                    .font(.caption)
-            }
-            .padding(.vertical, 4)
-        }
-        .buttonStyle(PlainButtonStyle())
-    }
-}
-
 
 #Preview {
     HistoryView()

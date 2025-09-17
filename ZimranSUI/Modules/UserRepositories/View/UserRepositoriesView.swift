@@ -16,40 +16,28 @@ struct UserRepositoriesView: View {
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                // Search Bar
-                HStack {
-                    TextField("Enter username...", text: $username)
-                        .textFieldStyle(RoundedBorderTextFieldStyle())
-                        .onSubmit {
-                            if !username.isEmpty {
-                                viewModel.loadUserRepositories(username: username)
-                            }
+                SearchBar(
+                    text: $username,
+                    placeholder: "Enter username...",
+                    onSubmit: {
+                        if !username.isEmpty {
+                            viewModel.loadUserRepositories(username: username)
                         }
-                    
-                    Button("Load") {
+                    },
+                    searchAction: {
                         if !username.isEmpty {
                             viewModel.loadUserRepositories(username: username)
                         }
                     }
-                    .disabled(username.isEmpty)
-                }
-                .padding()
+                )
 
                 if viewModel.isLoading {
-                    Spacer()
-                    ProgressView("Loading repositories...")
-                    Spacer()
+                    LoadingView(message: "Loading repositories...")
                 } else if viewModel.repositories.isEmpty && !username.isEmpty {
-                    Spacer()
-                    VStack(spacing: 16) {
-                        Image(systemName: "folder")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray)
-                        Text("No repositories found")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
+                    EmptyStateView(
+                        icon: "folder",
+                        title: "No repositories found"
+                    )
                 } else if !username.isEmpty {
                     List(viewModel.repositories) { repository in
                         RepositoryRowView(repository: repository) {
@@ -61,16 +49,10 @@ struct UserRepositoriesView: View {
                     }
                     .listStyle(PlainListStyle())
                 } else {
-                    Spacer()
-                    VStack(spacing: 16) {
-                        Image(systemName: "person.circle")
-                            .font(.system(size: 50))
-                            .foregroundColor(.gray)
-                        Text("Enter a username to view repositories")
-                            .font(.headline)
-                            .foregroundColor(.secondary)
-                    }
-                    Spacer()
+                    EmptyStateView(
+                        icon: "person.circle",
+                        title: "Enter a username to view repositories"
+                    )
                 }
             }
             .navigationTitle("User Repositories")
