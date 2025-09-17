@@ -20,6 +20,7 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
     
     // OAuth configuration
     private let clientID = "Ov23liEI45VHtjMirJdp"
+    private let clientSecret = "c6381b653aeeb0fa9e218bca00d5d56ec35c57fa"
     private let redirectURI = "zimransui://oauth-callback"
     private let authorizeEndpoint = "https://github.com/login/oauth/authorize"
     private let tokenEndpoint = "https://github.com/login/oauth/access_token"
@@ -64,7 +65,14 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
     func authenticateWithOAuth() -> AnyPublisher<AuthenticatedUser, Error> {
         return Future<AuthenticatedUser, Error> { [weak self] promise in
             self?.startOAuthFlow(promise: promise)
-        }.eraseToAnyPublisher()
+        }
+        .handleEvents(receiveOutput: { [weak self] user in
+            DispatchQueue.main.async {
+                self?.currentUser = user
+                self?.isAuthenticated = true
+            }
+        })
+        .eraseToAnyPublisher()
     }
     
     func signOut() {
@@ -108,9 +116,8 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
             URLQueryItem(name: "scope", value: scopes),
             URLQueryItem(name: "state", value: state),
             URLQueryItem(name: "allow_signup", value: "true"),
-            URLQueryItem(name: "code_challenge", value: challenge),
-            URLQueryItem(name: "code_challenge_method", value: "S256")
         ]
+
         
         guard let authURL = components.url else {
             promise(.failure(AuthError.invalidURL))
@@ -179,10 +186,6 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
     }
     
     private func exchangeCodeForToken(code: String) async throws -> String? {
-        guard let verifier = currentCodeVerifier else {
-            throw AuthError.noCodeVerifier
-        }
-        
         var request = URLRequest(url: URL(string: tokenEndpoint)!)
         request.httpMethod = "POST"
         request.setValue("application/json", forHTTPHeaderField: "Accept")
@@ -190,19 +193,29 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         
         let bodyParams = [
             "client_id": clientID,
+            "client_secret": clientSecret,
             "code": code,
-            "redirect_uri": redirectURI,
-            "grant_type": "authorization_code",
-            "code_verifier": verifier
+            "redirect_uri": redirectURI
         ]
         
-        let bodyString = bodyParams.map { key, value in
-            "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
-        }.joined(separator: "&")
+        let bodyString = bodyParams
+            .map { key, value in
+                "\(key)=\(value.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? "")"
+            }
+            .joined(separator: "&")
         
         request.httpBody = bodyString.data(using: .utf8)
         
+        // debug logs
+        if let body = request.httpBody, let bodyStr = String(data: body, encoding: .utf8) {
+            print("Token request body: \(bodyStr)")
+        }
+        
         let (data, response) = try await URLSession.shared.data(for: request)
+        
+        if let respStr = String(data: data, encoding: .utf8) {
+            print("Token response body: \(respStr)")
+        }
         
         if let http = response as? HTTPURLResponse, http.statusCode != 200 {
             throw AuthError.tokenExchangeFailed
@@ -222,7 +235,7 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         
         throw AuthError.noToken
     }
-    
+
     private func getUserWithToken(_ token: String) async throws -> AuthenticatedUser? {
         // Use our NetworkClient which has proper headers configured
         return try await withCheckedThrowingContinuation { continuation in

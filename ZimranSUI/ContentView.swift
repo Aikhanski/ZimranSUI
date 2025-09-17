@@ -89,7 +89,7 @@ struct ProfileView: View {
                         if let user = authProvider.currentUser {
                             AsyncImage(url: URL(string: user.avatarURL)) { image in
                                 image
-                                    .resizable()l
+                                    .resizable()
                                     .aspectRatio(contentMode: .fill)
                             } placeholder: {
                                 ProgressView()

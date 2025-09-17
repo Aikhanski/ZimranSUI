@@ -55,7 +55,6 @@ final class HistoryStorageManager: HistoryStorageProvider {
         // Синхронно загружаем из @FileStorage
         cachedRepositoryHistory = repositoryHistory ?? []
         cachedUserHistory = userHistory ?? []
-        print("📚 Cache loaded: \(cachedRepositoryHistory.count) repos, \(cachedUserHistory.count) users")
     }
     
     private func syncCacheToStorage() {
@@ -75,7 +74,6 @@ final class HistoryStorageManager: HistoryStorageProvider {
             cachedRepositoryHistory = Array(cachedRepositoryHistory.prefix(maxHistoryItems))
         }
         
-        print("📚 Added repository to cache: \(repository.name), total: \(cachedRepositoryHistory.count)")
         
         // Синхронизируем с файловым хранилищем
         syncCacheToStorage()
@@ -103,12 +101,10 @@ final class HistoryStorageManager: HistoryStorageProvider {
     }
     
     func getRepositoryHistory() -> [HistoryItem] {
-        print("📚 Getting repository history from cache: \(cachedRepositoryHistory.count) items")
         return cachedRepositoryHistory
     }
     
     func getUserHistory() -> [HistoryItem] {
-        print("📚 Getting user history from cache: \(cachedUserHistory.count) items")
         return cachedUserHistory
     }
     
