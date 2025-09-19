@@ -11,13 +11,10 @@ import Combine
 import Alamofire
 @testable import ZimranSUI
 
-/// Assembly для регистрации моков в тестах
 struct MockDependencyContainerAssembly: Assembly {
     
     func assemble(container: Container) {
-        // Регистрируем все моки для основных сервисов
         
-        // Auth моки
         container.register(AuthCredentialsProvider.self) { _ in
             MockAuthCredentialsProvider()
         }.inObjectScope(.container)
@@ -30,7 +27,6 @@ struct MockDependencyContainerAssembly: Assembly {
             MockAuthProvider()
         }.inObjectScope(.container)
         
-        // GitHub моки
         container.register(GitHubUserProvider.self) { _ in
             MockGitHubUserProvider()
         }.inObjectScope(.container)
@@ -39,7 +35,6 @@ struct MockDependencyContainerAssembly: Assembly {
             MockGitHubRepositoryProvider()
         }.inObjectScope(.container)
         
-        // Network моки
         container.register(NetworkClient.self) { _ in
             MockNetworkClient()
         }.inObjectScope(.container)
@@ -48,25 +43,19 @@ struct MockDependencyContainerAssembly: Assembly {
             MockBaseURLProvider()
         }.inObjectScope(.container)
         
-        // Storage моки
         container.register(HistoryStorageProvider.self) { _ in
             MockHistoryStorageProvider()
         }.inObjectScope(.container)
         
-        // Router моки
         container.register((any RouterProtocol).self) { _ in
             MockRouter()
         }.inObjectScope(.container)
         
-        // Search моки
         container.register(RepositorySearchServiceProtocol.self) { _ in
             MockRepositorySearchService()
         }.inObjectScope(.container)
     }
 }
-
-
-// MARK: Auth Mocks
     class MockAuthCredentialsProvider: AuthCredentialsProvider {
     var token: String?
     
@@ -132,7 +121,6 @@ struct MockDependencyContainerAssembly: Assembly {
     }
 }
 
-// MARK: GitHub Mocks
 class MockGitHubUserProvider: GitHubUserProvider {
     
     var searchUsersResult: Result<SearchUsersResponse, Error> = .success(
@@ -218,7 +206,6 @@ class MockGitHubRepositoryProvider: GitHubRepositoryProvider {
     }
 }
 
-// MARK: Network Mocks
 public class MockNetworkClient: NetworkClient {
     
     var searchUsersResult: Result<SearchUsersResponse, Error> = .success(
@@ -313,7 +300,6 @@ class MockBaseURLProvider: BaseURLProvider {
     var baseURL: String = "https://api.github.com"
 }
 
-// MARK: Storage Mocks
 class MockHistoryStorageProvider: HistoryStorageProvider {
     
     var repositoryHistory: [HistoryItem] = []
@@ -364,7 +350,6 @@ class MockHistoryStorageProvider: HistoryStorageProvider {
     }
 }
 
-// MARK: Router Mocks
 class MockRouter: RouterProtocol, ObservableObject {
     @Published var path: [Route] = []
     
@@ -405,7 +390,6 @@ class MockRouter: RouterProtocol, ObservableObject {
     }
 }
 
-// MARK: Search Service Mocks
 class MockRepositorySearchService: RepositorySearchServiceProtocol {
     var searchRepositoriesResult: Result<SearchRepositoriesResponse, Error> = .success(
         SearchRepositoriesResponse(

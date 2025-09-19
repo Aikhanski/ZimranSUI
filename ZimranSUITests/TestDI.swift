@@ -9,9 +9,7 @@ import Foundation
 import Swinject
 @testable import ZimranSUI
 
-/// Централизованная инициализация DI контейнера для тестов
 final class TestDI {
-    /// Создает новый контейнер для каждого теста
     static func makeContainer() -> Container {
         let container = Container()
         MockDependencyContainerAssembly().assemble(container: container)

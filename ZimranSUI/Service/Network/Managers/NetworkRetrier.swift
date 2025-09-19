@@ -41,7 +41,6 @@ final class NetworkRetrier: RequestRetrier {
     }
 }
 
-// MARK: - User Session Destroyer Protocol
 protocol UserSessionDestroyer {
     func destroySession()
 }

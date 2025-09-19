@@ -35,7 +35,6 @@ public struct FileStorage<T: Codable & Equatable> {
     }
 }
 
-// MARK: - Disk Directory
 public enum DiskDirectory {
     case documents
     case caches
@@ -56,7 +55,6 @@ public enum DiskDirectory {
     }
 }
 
-// MARK: - Simple Disk Implementation
 public class Disk {
     public init() {}
     

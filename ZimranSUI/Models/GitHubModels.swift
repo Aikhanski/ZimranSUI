@@ -5,9 +5,11 @@
 //  Created by Aikhan on 15.09.2025.
 //
 
+//
+//
+
 import Foundation
 
-// MARK: - Repository Models
 struct RepositoryModel: Codable, Identifiable, Hashable {
     let id: Int
     let name: String
@@ -119,7 +121,6 @@ struct SearchRepositoriesResponse: Codable {
     }
 }
 
-// MARK: - User Models
 struct UserModel: Codable, Identifiable, Hashable {
     let id: Int
     let login: String
@@ -148,7 +149,6 @@ struct SearchUsersResponse: Codable {
     }
 }
 
-// MARK: - Search Parameters
 struct RepositorySearchParameters: Encodable {
     let query: String
     let sort: RepositorySortOption
@@ -193,7 +193,6 @@ struct UserSearchParameters: Encodable {
     }
 }
 
-// MARK: - Sort Options
 enum RepositorySortOption: String, CaseIterable, Codable {
     case stars
     case forks

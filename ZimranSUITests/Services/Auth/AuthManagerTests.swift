@@ -1,8 +1,11 @@
 //
 //  AuthManagerTests.swift
-//  ZimranSUITests
+//  ZimranSUI
 //
-//  Created by Aikhan on 17.09.2025.
+//  Created by Aikhan on 19.09.2025.
+//
+
+//
 //
 
 import Testing
@@ -11,11 +14,9 @@ import Foundation
 import AuthenticationServices
 @testable import ZimranSUI
 
-// TODO: Исправить ошибки Swinject и Swift макросов
 /*
 struct AuthManagerTests {
     
-    // MARK: - Тесты
     
     @Test("Инициализация AuthManager - не аутентифицирован")
     func testInitialStateNotAuthenticated() {
@@ -39,7 +40,6 @@ struct AuthManagerTests {
         
         let authManager = AuthManager(authCredentialsProvider: mockCredentialsProvider, githubUserProvider: mockGitHubUserProvider, userSessionDestroyer: mockUserSessionDestroyer)
         
-        // Даем время для загрузки информации о пользователе
         try await Task.sleep(nanoseconds: 2_000_000_000)
         
         #expect(authManager.isAuthenticated)
@@ -101,7 +101,6 @@ struct AuthManagerTests {
         #expect(!authManager.isAuthenticated)
         #expect(authManager.currentUser == nil)
         
-        // Симулируем аутентификацию
         authManager.isAuthenticated = true
         authManager.currentUser = AuthenticatedUser(id: 1, login: "testuser", avatarURL: "url", htmlURL: "html", name: "Test User", email: nil, bio: nil, company: nil, blog: nil, location: nil, type: "User", siteAdmin: false, followers: 0, following: 0, publicRepos: 0, publicGists: 0, createdAt: "2023-01-01T00:00:00Z", updatedAt: "2023-01-01T00:00:00Z")
         
@@ -110,7 +109,6 @@ struct AuthManagerTests {
     }
 }
 
-// MARK: - Моки
 extension AuthManagerTests {
     
     private final class MockAuthCredentialsProvider: AuthCredentialsProvider {

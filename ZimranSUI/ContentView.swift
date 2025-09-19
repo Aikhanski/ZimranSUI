@@ -175,7 +175,7 @@ struct ProfileView: View {
                     .padding()
                 }
             }
-            .navigationTitle("Settings")
+            .navigationTitle("Profile")
             .navigationBarTitleDisplayMode(.large)
         }
     }

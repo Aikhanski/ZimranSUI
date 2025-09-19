@@ -45,7 +45,6 @@ final class RepositorySearchService: RepositorySearchServiceProtocol {
     }
 }
 
-// MARK: - Search Coordinator
 final class RepositorySearchCoordinator: ObservableObject {
     
     @Published var repositories: [RepositoryModel] = []
@@ -154,4 +153,3 @@ final class RepositorySearchCoordinator: ObservableObject {
         error = nil
     }
 }
-

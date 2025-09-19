@@ -2,7 +2,7 @@
 //  AuthCredentialsManager.swift
 //  ZimranSUI
 //
-//  Created by Aikhan on 15.09.2025.
+//  Created by Aikhan on 16.09.2025.
 //
 
 import Foundation

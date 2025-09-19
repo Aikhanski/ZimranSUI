@@ -10,7 +10,6 @@ import Combine
 
 extension RepositorySearchViewModelTests {
     
-    /// Extension для работы с Combine publishers в async/await контексте
     private func async<T>(_ publisher: AnyPublisher<T, Error>) async throws -> T {
         return try await withCheckedThrowingContinuation { continuation in
             var cancellable: AnyCancellable?

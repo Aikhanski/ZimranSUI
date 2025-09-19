@@ -59,7 +59,6 @@ final class NetworkClientImpl: NetworkClient {
     }
 }
 
-// MARK: - Parameter Encoder Factory
 struct ParameterEncoderFactory {
     func makeParameterEncoder(for method: HTTPMethod) -> ParameterEncoder {
         switch method {
@@ -73,7 +72,6 @@ struct ParameterEncoderFactory {
     }
 }
 
-// MARK: - Network Error
 enum NetworkError: Error, LocalizedError {
     case alamofireError(AFError)
     case unknown(Error)

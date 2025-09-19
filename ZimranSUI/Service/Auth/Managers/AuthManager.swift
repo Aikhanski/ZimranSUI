@@ -2,7 +2,7 @@
 //  AuthManager.swift
 //  ZimranSUI
 //
-//  Created by Aikhan on 15.09.2025.
+//  Created by Aikhan on 16.09.2025.
 //
 
 import Foundation
@@ -206,7 +206,6 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         
         request.httpBody = bodyString.data(using: .utf8)
         
-        // debug logs
         if let body = request.httpBody, let bodyStr = String(data: body, encoding: .utf8) {
             print("Token request body: \(bodyStr)")
         }
@@ -254,7 +253,6 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         }
     }
     
-    // MARK: - PKCE Helpers
     private func generateCodeVerifier() -> String {
         return randomString(length: 64)
     }
@@ -283,10 +281,8 @@ final class AuthManager: NSObject, AuthProvider, ObservableObject {
         return s
     }
     
-    // MARK: - Debug Functions
 }
 
-// MARK: - Auth Errors
 enum AuthError: Error, LocalizedError {
     case invalidURL
     case invalidCallback

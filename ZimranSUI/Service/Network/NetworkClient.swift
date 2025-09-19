@@ -46,5 +46,4 @@ extension NetworkClient {
     }
 }
 
-// MARK: - Empty Parameters
 struct EmptyParameters: Encodable {}

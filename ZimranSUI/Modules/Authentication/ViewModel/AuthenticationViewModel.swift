@@ -29,7 +29,6 @@ final class AuthenticationViewModel: ObservableObject {
         self.isAuthenticated = authProvider.isAuthenticated
     }
     
-    // MARK: - Convenience initializer for production
     convenience init() {
         self.init(
             authProvider: DependencyContainer.shared.resolve(AuthProvider.self)!,

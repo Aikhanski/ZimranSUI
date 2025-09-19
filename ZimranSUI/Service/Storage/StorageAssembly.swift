@@ -2,7 +2,10 @@
 //  StorageAssembly.swift
 //  ZimranSUI
 //
-//  Created by Aikhan on 15.09.2025.
+//  Created by Aikhan on 16.09.2025.
+//
+
+//
 //
 
 import Foundation
@@ -20,7 +23,6 @@ struct StorageAssembly: Assembly {
     }
 }
 
-// MARK: - History Storage Protocol
 protocol HistoryStorageProvider {
     func addRepositoryToHistory(_ repository: RepositoryModel)
     func addUserToHistory(_ user: UserModel)
@@ -32,7 +34,6 @@ protocol HistoryStorageProvider {
     func deleteUserHistoryItem(_ id: String)
 }
 
-// MARK: - History Storage Manager
 final class HistoryStorageManager: HistoryStorageProvider {
     @FileStorage(path: "repository_history")
     private var repositoryHistory: [HistoryItem]?
@@ -40,25 +41,21 @@ final class HistoryStorageManager: HistoryStorageProvider {
     @FileStorage(path: "user_history")
     private var userHistory: [HistoryItem]?
     
-    // Кэш в памяти для мгновенного доступа
     private var cachedRepositoryHistory: [HistoryItem] = []
     private var cachedUserHistory: [HistoryItem] = []
     
     private let maxHistoryItems = 20
     
     init() {
-        // Загружаем кэш при инициализации
         loadCacheFromStorage()
     }
     
     private func loadCacheFromStorage() {
-        // Синхронно загружаем из @FileStorage
         cachedRepositoryHistory = repositoryHistory ?? []
         cachedUserHistory = userHistory ?? []
     }
     
     private func syncCacheToStorage() {
-        // Принудительно синхронизируем кэш с файловым хранилищем
         repositoryHistory = cachedRepositoryHistory
         userHistory = cachedUserHistory
     }
@@ -66,7 +63,6 @@ final class HistoryStorageManager: HistoryStorageProvider {
     func addRepositoryToHistory(_ repository: RepositoryModel) {
         let historyItem = HistoryItem(repository: repository)
         
-        // Обновляем кэш в памяти мгновенно
         cachedRepositoryHistory.removeAll { $0.id == historyItem.id }
         cachedRepositoryHistory.insert(historyItem, at: 0)
         
@@ -75,17 +71,14 @@ final class HistoryStorageManager: HistoryStorageProvider {
         }
         
         
-        // Синхронизируем с файловым хранилищем
         syncCacheToStorage()
         
-        // Отправляем уведомление об обновлении истории
         NotificationCenter.default.post(name: .historyUpdated, object: nil)
     }
     
     func addUserToHistory(_ user: UserModel) {
         let historyItem = HistoryItem(user: user)
         
-        // Обновляем кэш в памяти мгновенно
         cachedUserHistory.removeAll { $0.id == historyItem.id }
         cachedUserHistory.insert(historyItem, at: 0)
 
@@ -93,10 +86,8 @@ final class HistoryStorageManager: HistoryStorageProvider {
             cachedUserHistory = Array(cachedUserHistory.prefix(maxHistoryItems))
         }
         
-        // Синхронизируем с файловым хранилищем
         syncCacheToStorage()
         
-        // Отправляем уведомление об обновлении истории
         NotificationCenter.default.post(name: .historyUpdated, object: nil)
     }
     

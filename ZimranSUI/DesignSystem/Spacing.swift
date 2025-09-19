@@ -8,7 +8,6 @@
 import SwiftUI
 
 extension CGFloat {
-    // MARK: - Spacing Scale
     static let spacingXS: CGFloat = 4
     static let spacingS: CGFloat = 8
     static let spacingM: CGFloat = 12
@@ -17,7 +16,6 @@ extension CGFloat {
     static let spacingXXL: CGFloat = 24
     static let spacingXXXL: CGFloat = 32
     
-    // MARK: - Padding Scale
     static let paddingXS: CGFloat = 4
     static let paddingS: CGFloat = 8
     static let paddingM: CGFloat = 12
@@ -26,7 +24,6 @@ extension CGFloat {
     static let paddingXXL: CGFloat = 24
     static let paddingXXXL: CGFloat = 32
     
-    // MARK: - Border Radius
     static let radiusS: CGFloat = 4
     static let radiusM: CGFloat = 8
     static let radiusL: CGFloat = 12

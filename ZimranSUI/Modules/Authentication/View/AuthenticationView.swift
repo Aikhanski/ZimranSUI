@@ -2,7 +2,7 @@
 //  AuthenticationView.swift
 //  ZimranSUI
 //
-//  Created by Aikhan on 15.09.2025.
+//  Created by Aikhan on 17.09.2025.
 //
 
 import SwiftUI
@@ -34,7 +34,6 @@ struct AuthenticationView: View {
         }
     }
     
-    // MARK: - Sections
     private var headerSection: some View {
         Image(systemName: "person.circle.fill")
             .font(.system(size: 80))
@@ -109,7 +108,6 @@ struct TokenInputView: View {
         }
     }
     
-    // MARK: - Sections
     private var headerSection: some View {
         VStack(spacing: .spacingS) {
             Text("Personal Access Token")

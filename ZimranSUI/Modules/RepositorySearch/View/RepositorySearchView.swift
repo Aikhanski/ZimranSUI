@@ -187,8 +187,6 @@ struct RepositoryModelRowView: View {
         .buttonStyle(PlainButtonStyle())
     }
 }
-
-
 #Preview {
     RepositorySearchView()
 }

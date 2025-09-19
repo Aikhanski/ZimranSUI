@@ -28,7 +28,6 @@ final class HistoryViewModel: ObservableObject {
         loadHistory()
     }
     
-    // MARK: - Convenience initializer for production
     convenience init() {
         self.init(
             historyStorageProvider: DependencyContainer.shared.resolve(HistoryStorageProvider.self)!,

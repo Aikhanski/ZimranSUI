@@ -23,7 +23,6 @@ struct HistoryViewModelTests: MockInjector {
         )
     }
     
-    // MARK: - Тесты переключения вкладок
     
     @Test("Переключение вкладок")
     func testSwitchTab() {
@@ -36,7 +35,6 @@ struct HistoryViewModelTests: MockInjector {
         #expect(viewModel.selectedTab == .repositories)
     }
     
-    // MARK: - Тесты состояния загрузки
     
     @Test("Проверка начального состояния загрузки")
     func testInitialRefreshingState() {
@@ -44,7 +42,6 @@ struct HistoryViewModelTests: MockInjector {
         #expect(viewModel.isRefreshing == false)
     }
     
-    // MARK: - Тесты инициализации
     
     @Test("Инициализация HistoryViewModel")
     func testInitialization() {
@@ -56,7 +53,6 @@ struct HistoryViewModelTests: MockInjector {
         #expect(!viewModel.isRefreshing)
     }
     
-    // MARK: - Тесты очистки истории
     
     @Test("Очистка истории репозиториев")
     func testClearRepositoryHistory() {

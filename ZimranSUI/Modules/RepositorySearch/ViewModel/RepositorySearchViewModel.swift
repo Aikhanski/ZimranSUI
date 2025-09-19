@@ -38,7 +38,6 @@ final class RepositorySearchViewModel: ObservableObject {
         setupDebouncedSearch()
     }
     
-    // MARK: - Convenience initializer for production
     convenience init() {
         self.init(
             githubRepositoryProvider: DependencyContainer.shared.resolve(GitHubRepositoryProvider.self)!,

@@ -2,7 +2,7 @@
 //  GitHubUserManager.swift
 //  ZimranSUI
 //
-//  Created by Aikhan on 15.09.2025.
+//  Created by Aikhan on 16.09.2025.
 //
 
 import Foundation
@@ -19,7 +19,6 @@ final class GitHubUserManager: GitHubUserProvider {
     func searchUsers(query: String, sort: UserSortOption, order: SortOrder) -> AnyPublisher<SearchUsersResponse, Error> {
         var parameters = ["q": query]
         
-        // Добавляем параметры сортировки только если не best match
         if sort != .bestMatch {
             parameters["sort"] = sort.rawValue
             parameters["order"] = order.rawValue

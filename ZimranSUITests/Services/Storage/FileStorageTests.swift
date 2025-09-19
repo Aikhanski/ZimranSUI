@@ -1,8 +1,11 @@
 //
 //  FileStorageTests.swift
-//  ZimranSUITests
+//  ZimranSUI
 //
-//  Created by Aikhan on 18.09.2025.
+//  Created by Aikhan on 19.09.2025.
+//
+
+//
 //
 
 import Testing
@@ -12,7 +15,6 @@ import Foundation
 @Suite(.serialized)
 struct FileStorageTests {
     
-    // MARK: - Тестовые модели
     
     private struct TestModel: Codable, Equatable {
         let id: Int
@@ -24,7 +26,6 @@ struct FileStorageTests {
         let items: [String]
     }
     
-    // MARK: - Тесты бизнес-логики
     
     @Test("Сохранение и загрузка простой модели")
     func testSaveAndLoadSimpleModel() {

@@ -1,8 +1,11 @@
 //
 //  GitHubUserProviderTests.swift
-//  ZimranSUITests
+//  ZimranSUI
 //
-//  Created by Aikhan on 18.09.2025.
+//  Created by Aikhan on 19.09.2025.
+//
+
+//
 //
 
 import Testing
@@ -10,8 +13,6 @@ import Combine
 import Foundation
 import Alamofire
 @testable import ZimranSUI
-
-
 @Suite(.serialized)
 struct GitHubUserProviderTests: MockInjector {
     
@@ -110,7 +111,6 @@ struct GitHubUserProviderTests: MockInjector {
         #expect(response.incompleteResults == false)
     }
     
-    // MARK: - Тесты получения пользователя
     
     @Test("Получение пользователя по имени")
     func testGetUserSuccess() async throws {
@@ -165,7 +165,6 @@ struct GitHubUserProviderTests: MockInjector {
         }
     }
     
-    // MARK: - Тесты обработки ошибок API
     
     @Test("Обработка ошибки 404")
     func testHandle404Error() async throws {
@@ -203,7 +202,6 @@ struct GitHubUserProviderTests: MockInjector {
         }
     }
     
-    // MARK: - Тесты валидации параметров
     
     @Test("Валидация пустого запроса поиска")
     func testValidateEmptySearchQuery() async throws {
@@ -233,7 +231,6 @@ struct GitHubUserProviderTests: MockInjector {
         #expect(mockNetworkClient.lastPath?.contains("search/users") == true)
     }
     
-    // MARK: - Тесты производительности
     
     @Test("Множественные запросы поиска")
     func testMultipleSearchRequests() async throws {
@@ -260,4 +257,3 @@ struct GitHubUserProviderTests: MockInjector {
         }
     }
 }
-

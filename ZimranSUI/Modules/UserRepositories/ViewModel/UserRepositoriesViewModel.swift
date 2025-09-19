@@ -31,7 +31,6 @@ final class UserRepositoriesViewModel: ObservableObject {
         self.router = router
     }
     
-    // MARK: - Convenience initializer for production
     convenience init() {
         self.init(
             githubRepositoryProvider: DependencyContainer.shared.resolve(GitHubRepositoryProvider.self)!,

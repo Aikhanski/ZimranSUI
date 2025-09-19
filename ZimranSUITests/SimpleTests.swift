@@ -45,7 +45,6 @@ struct SimpleTests: MockInjector {
         #expect(viewModel.selectedTab == .users)
     }
     
-    // MARK: - Simple SearchViewModel Tests
     
     @Test("Простая инициализация SearchViewModel")
     func testSearchViewModelInitialization() {
@@ -72,7 +71,6 @@ struct SimpleTests: MockInjector {
     
     @Test("Установка текста поиска в SearchViewModel")
     func testSearchViewModelSetSearchText() {
-        // Arrange
         let mockGitHubUserProvider: GitHubUserProvider = injectedMock(for: GitHubUserProvider.self)
         let mockHistoryStorageProvider: HistoryStorageProvider = injectedMock(for: HistoryStorageProvider.self)
         let mockRouter: any RouterProtocol = injectedMock(for: (any RouterProtocol).self)
@@ -164,4 +162,3 @@ struct SimpleTests: MockInjector {
         #expect(SortOrder.desc.rawValue == "desc")
     }
 }
-

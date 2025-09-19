@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-// MARK: - Primary Button Style
 struct PrimaryButtonStyle: ButtonStyle {
     let isLoading: Bool
     
@@ -39,7 +38,6 @@ struct PrimaryButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - Secondary Button Style
 struct SecondaryButtonStyle: ButtonStyle {
     let isLoading: Bool
     
@@ -71,7 +69,6 @@ struct SecondaryButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - Destructive Button Style
 struct DestructiveButtonStyle: ButtonStyle {
     let isLoading: Bool
     
@@ -103,7 +100,6 @@ struct DestructiveButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - Ghost Button Style
 struct GhostButtonStyle: ButtonStyle {
     let isLoading: Bool
     
@@ -138,7 +134,6 @@ struct GhostButtonStyle: ButtonStyle {
     }
 }
 
-// MARK: - View Extensions
 extension View {
     func primaryButtonStyle(isLoading: Bool = false) -> some View {
         self.buttonStyle(PrimaryButtonStyle(isLoading: isLoading))
