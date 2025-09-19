@@ -15,12 +15,25 @@ final class HistoryViewModel: ObservableObject {
     @Published var selectedTab: HistoryTab = .repositories
     @Published var isRefreshing = false
     
-    private let historyStorageProvider = DependencyContainer.shared.resolve(HistoryStorageProvider.self)!
-    private let router = DependencyContainer.shared.resolve(Router.self)!
+    private let historyStorageProvider: HistoryStorageProvider
+    private let router: any RouterProtocol
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
+    init(
+        historyStorageProvider: HistoryStorageProvider,
+        router: any RouterProtocol
+    ) {
+        self.historyStorageProvider = historyStorageProvider
+        self.router = router
         loadHistory()
+    }
+    
+    // MARK: - Convenience initializer for production
+    convenience init() {
+        self.init(
+            historyStorageProvider: DependencyContainer.shared.resolve(HistoryStorageProvider.self)!,
+            router: DependencyContainer.shared.resolve((any RouterProtocol).self)!
+        )
     }
     
     enum HistoryTab: CaseIterable {
@@ -61,7 +74,9 @@ final class HistoryViewModel: ObservableObject {
     
     func selectRepository(_ repository: RepositoryModel) {
         if let url = URL(string: repository.htmlUrl) {
-            UIApplication.shared.open(url)
+            DispatchQueue.main.async {
+                UIApplication.shared.open(url)
+            }
         }
     }
     

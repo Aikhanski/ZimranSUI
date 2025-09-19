@@ -9,7 +9,19 @@ import Foundation
 import SwiftUI
 import Combine
 
-final class Router: ObservableObject {
+protocol RouterProtocol: ObservableObject {
+    var path: [Route] { get set }
+    func showAuthentication()
+    func showRepositorySearch()
+    func showUserSearch()
+    func showHistory()
+    func showSettings()
+    func showUserRepositories()
+    func pop()
+    func popToRoot()
+}
+
+final class Router: RouterProtocol {
     @Published var path: [Route] = []
     
     func showAuthentication() {

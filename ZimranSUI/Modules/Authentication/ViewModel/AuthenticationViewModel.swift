@@ -16,12 +16,25 @@ final class AuthenticationViewModel: ObservableObject {
     
     var error: Error?
     
-    private let authProvider = DependencyContainer.shared.resolve(AuthProvider.self)!
-    private let router = DependencyContainer.shared.resolve(Router.self)!
+    private let authProvider: AuthProvider
+    private let router: any RouterProtocol
     private var cancellables: Set<AnyCancellable> = []
     
-    init() {
-        isAuthenticated = authProvider.isAuthenticated
+    init(
+        authProvider: AuthProvider,
+        router: any RouterProtocol
+    ) {
+        self.authProvider = authProvider
+        self.router = router
+        self.isAuthenticated = authProvider.isAuthenticated
+    }
+    
+    // MARK: - Convenience initializer for production
+    convenience init() {
+        self.init(
+            authProvider: DependencyContainer.shared.resolve(AuthProvider.self)!,
+            router: DependencyContainer.shared.resolve((any RouterProtocol).self)!
+        )
     }
     
     func authenticateWithToken() {

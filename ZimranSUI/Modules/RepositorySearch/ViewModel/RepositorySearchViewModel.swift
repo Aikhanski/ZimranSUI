@@ -21,14 +21,30 @@ final class RepositorySearchViewModel: ObservableObject {
     
     var error: Error?
     
-    private let githubRepositoryProvider = DependencyContainer.shared.resolve(GitHubRepositoryProvider.self)!
-    private let historyStorageProvider = DependencyContainer.shared.resolve(HistoryStorageProvider.self)!
-    private let router = DependencyContainer.shared.resolve(Router.self)!
+    private let githubRepositoryProvider: GitHubRepositoryProvider
+    private let historyStorageProvider: HistoryStorageProvider
+    private let router: any RouterProtocol
     private var cancellables: Set<AnyCancellable> = []
     private let itemsPerPage = 30
     
-    init() {
+    init(
+        githubRepositoryProvider: GitHubRepositoryProvider,
+        historyStorageProvider: HistoryStorageProvider,
+        router: any RouterProtocol
+    ) {
+        self.githubRepositoryProvider = githubRepositoryProvider
+        self.historyStorageProvider = historyStorageProvider
+        self.router = router
         setupDebouncedSearch()
+    }
+    
+    // MARK: - Convenience initializer for production
+    convenience init() {
+        self.init(
+            githubRepositoryProvider: DependencyContainer.shared.resolve(GitHubRepositoryProvider.self)!,
+            historyStorageProvider: DependencyContainer.shared.resolve(HistoryStorageProvider.self)!,
+            router: DependencyContainer.shared.resolve((any RouterProtocol).self)!
+        )
     }
     
     func search() {

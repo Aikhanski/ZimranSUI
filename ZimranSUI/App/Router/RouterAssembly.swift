@@ -10,7 +10,7 @@ import Swinject
 
 struct RouterAssembly: Assembly {
     func assemble(container: Container) {
-        container.register(Router.self) { _ in
+        container.register((any RouterProtocol).self) { _ in
             Router()
         }.inObjectScope(.container)
     }

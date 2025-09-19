@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ContentView: View {
     @StateObject private var authProvider = DependencyContainer.shared.resolve(AuthProvider.self) as! AuthManager
-    @StateObject private var router = DependencyContainer.shared.resolve(Router.self)!
+    @StateObject private var router = DependencyContainer.shared.resolve((any RouterProtocol).self)! as! Router
     
     var body: some View {
         NavigationStack(path: $router.path) {
