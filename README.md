@@ -26,3 +26,10 @@ The app contains 4 main tabs:
 3. Build and run on iOS Simulator or a real device
 
 SwiftUI, MVVM, Combine, Swinject, Alamofire
+
+#Screenshots
+![Image alt](https://github.com/Aikhanski/ZimranSUI/blob/main/main.png)
+![Image alt](https://github.com/Aikhanski/ZimranSUI/blob/main/repository.png)
+![Image alt](https://github.com/Aikhanski/ZimranSUI/blob/main/users.png)
+![Image alt](https://github.com/Aikhanski/ZimranSUI/blob/main/history.png)
+![Image alt](https://github.com/Aikhanski/ZimranSUI/blob/main/profile.png)
